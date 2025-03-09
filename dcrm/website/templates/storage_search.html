@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+   <h1>Storage Search</h1>
+    <form method="get" >
+            <label for="store_loc">Street Address:</label>
+            <input type="text" id="store_loc" name="storage_loc" value="{{ request.GET.storage_loc|default:'' }}" />
+            <br /> <br />
+            <label for="storage_city">City:</label>
+            <input type="text" id="storage_city" name="storage_city" value="{{ request.GET.storage_city|default:'' }}" />
+            <br /> <br />
+            <label for="storage_room">Room:</label>
+            <input type="text" id="storage_room" name="storage_room" value="{{ request.GET.storage_room|default:'' }}" />
+            <br />
+        <button class="btn btn-primary" type="submit" >Search</button>
+    </form>
+
+    {% if storages %}
+        <h2>Results:</h2>
+        <ul>
+            {% for storage in storages %}
+            <li><a href="#">{{ storage.storage_loc }}, {{ storage.storage_city }}</a></li>
+            {% endfor %}
+        </ul>
+    {% elif form.is_bound %}
+        <p>No storage found.</p>
+    {% endif %}
+
+{% endblock %}

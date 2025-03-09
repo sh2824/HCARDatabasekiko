@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1> Artworks at {{ storage.storage_loc }}</h1>
+
+
+<table class="table table-striped table-bordered">
+  <thead class="table-dark">
+    <tr>
+      <th scope="col">Title</th>
+      <th scope="col">Medium</th>
+      <th scope="col">Date Created</th>
+      <th scope="col">Photo</th>
+    </tr>
+  </thead>
+  <tbody>
+      
+  {% if art %}
+    {% for artwork in art %}
+      <tr>
+        <td><a href="{% url 'artwork_profile' artwork.art_num %}"> {{ artwork.art_title }}</a></td>
+        <td>{{ artwork.art_medium }}</td>
+        <td>{{ artwork.creation_date }}</td>
+        <td> PLACEHOLDER ADD IMAGE </td>
+      </tr>
+    {% endfor %}
+
+  {% endif %}
+
+  
+    </tbody>
+</table>
+
+{% endblock %}

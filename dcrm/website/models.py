@@ -1,5 +1,5 @@
 from django.db import models
-
+import time
 
 from django.db import models
 import uuid
@@ -24,6 +24,18 @@ class Artist(models.Model):
         super().save(*args, **kwargs)
 
 
+
+class Storage(models.Model):
+    storage_id = models.CharField(primary_key=True, max_length=7)
+    storage_loc = models.CharField(max_length=40, blank=True, null=True)
+    storage_type = models.CharField(max_length=20, blank=True, null=True)
+    storage_city = models.CharField(max_length=40, blank=True, null=True)
+
+    class Meta:
+        managed = True
+        db_table = 'storage'
+
+
 class Artwork(models.Model):
     art_num = models.CharField(primary_key=True, max_length=8)
     art_title = models.CharField(max_length=50, blank=True, null=True)
@@ -32,6 +44,8 @@ class Artwork(models.Model):
     is_sold = models.CharField(max_length=1, blank=True, null=True)
     art_size = models.CharField(max_length=50, blank=True, null=True)
     artist = models.ForeignKey(Artist, models.DO_NOTHING, blank=False, null=False)
+    storage = models.ForeignKey(Storage, models.DO_NOTHING, blank=False, null=False)
+    # picture = models.ImageField(name=str(time.time()), upload_to="media/")
 
     class Meta:
         managed = True
@@ -62,17 +76,6 @@ class Sale(models.Model):
     class Meta:
         managed = True
         db_table = 'sale'
-
-
-class Storage(models.Model):
-    storage_id = models.CharField(primary_key=True, max_length=7)
-    storage_loc = models.CharField(max_length=40, blank=True, null=True)
-    storage_type = models.CharField(max_length=20, blank=True, null=True)
-
-    class Meta:
-        managed = True
-        db_table = 'storage'
-
 
 class WallSpace(models.Model):
     wall = models.OneToOneField(Storage, models.DO_NOTHING, primary_key=True)

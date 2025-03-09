@@ -3,6 +3,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from .filters import ArtistFilter
 from .models import *
+from .forms import ArtistSearchForm, StorageSearchForm
 
 
 def home(request):
@@ -76,6 +77,56 @@ def artwork_profile(request, pk):
         # look up artwork
         artwork_profile = Artwork.objects.get(art_num=pk)
         return render(request, 'artwork.html', {'artwork_profile': artwork_profile})
+    else:
+        messages.success(request, "You Must Be Logged In To View That Page")
+        return redirect('home')
+
+def artist_search(request):
+    form = ArtistSearchForm(request.GET)
+    artists = []
+
+    if form.is_valid():
+        artist_fname = form.cleaned_data.get("artist_fname")
+        artist_lname = form.cleaned_data.get("artist_lname")
+
+        query = {}
+        if artist_fname:
+            query["artist_fname__icontains"] = artist_fname
+        if artist_lname:
+            query["artist_lname__icontains"] = artist_lname
+
+        if query:
+            artists = Artist.objects.filter(**query)
+
+    return render(request, "artist_search.html", {"form": form, "artists": artists})
+
+def storage_search(request):
+    form = StorageSearchForm(request.GET)
+    storages = []
+
+    if form.is_valid():
+        storage_loc = form.cleaned_data.get("storage_loc")
+        storage_city = form.cleaned_data.get("storage_city")
+        storage_room = form.cleaned_data.get("storage_room")
+
+        query = {}
+        if storage_loc:
+            query["storage_loc__icontains"] = storage_loc
+        if storage_city:
+            query["storage_city__icontains"] = storage_city
+        if storage_room:
+            query["storage_room__icontains"] = storage_room
+
+        if query:
+            storages = Storage.objects.filter(**query)
+
+    return render(request, "storage_search.html", {"form": form, "storages": storages})
+
+def storage(request, pk):
+    if request.user.is_authenticated:
+        # look up storage
+        storage_profile = Storage.objects.get(storage_id=pk)
+        return render(request, 'storage.html', {'storage_profile': storage_profile})
     else:
         messages.success(request, "You Must Be Logged In To View That Page")
         return redirect('home')
